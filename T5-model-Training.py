@@ -34,7 +34,7 @@ MODEL_DIR = pwd+"/model"
 input_sec=3000
 output_sec=8
 
-batch_sz=4
+batch_sz=2
 
 def nq_dataset_fn(split, shuffle_files=False):
   # We only have one file for each split.
@@ -167,7 +167,7 @@ saved_model_path = model.export(
     export_dir,
     checkpoint_step=-1,  # use most recent
     beam_size=1,  # no beam search
-    temperature=1.0,  # sample according to predicted distribution
+    temperature=0,  # sample according to predicted distribution
 )
 print("Model saved to:", saved_model_path)
 

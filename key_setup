@@ -11,4 +11,6 @@ cat /.ssh/id_rsa.pub  # to get key details and then copy it on server
 # <REMOTE_DEST_DIR> == /root/
 # may add -i ..\.ssh\id_rsa after -v, not necessary
 scp -v  -P <PORT> <LOCAL_FILE> root@<REMOTE_IP>:<REMOTE_DEST_DIR>
- 
+
+
+ssh -p 13715 root@ssh5.vast.ai -L 8080:localhost:8080
