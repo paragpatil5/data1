@@ -1,0 +1,14 @@
+ssh-keygen -t rsa   # to create ssh key
+
+ssh-add   # to add ssh key in linux
+
+ls ~/.ssh/id_*     # to see ssh key file
+
+cat /.ssh/id_rsa.pub  # to get key details and then copy it on server 
+
+
+#########to copy files ###############
+# <REMOTE_DEST_DIR> == /root/
+# may add -i ..\.ssh\id_rsa after -v, not necessary
+scp -v  -P <PORT> <LOCAL_FILE> root@<REMOTE_IP>:<REMOTE_DEST_DIR>
+ 
