@@ -1,0 +1,282 @@
+#######################To see the webservice running or not##########################################
+
+ps -aux|grep /python
+
+
+####################Kill the pid##################################################################
+
+sudo kill -9 <pid>
+
+
+####################Login to JET portal using Terminal######################################################
+ssh -i /home/ganeshkharad/Documents/JetLegal/jet_docker.pem jet@10.198.1.208
+
+
+###################################pip install error#############################
+sudo -H pip install --ignore-installed -U fitz(<Package Name>)
+
+###################################mount qnap#############################
+sudo mount -a
+
+###################PDF to text package installation########################3
+
+sudo apt-get install build-essential libssl-dev libffi-dev python-dev
+
+################# To check the log #####################################
+
+tailf fileName.log
+##########################To see install python version########################
+type python and then press <tab>
+
+#######################login as Root user#######################################
+sudo su(login as root user)
+sudo jet(login as jet user)
+
+######################Release the port or Kill the all task by web service port no#############################
+fuser -k <portno>/tcp
+
+
+#################verify if specific package has been installed on your system or not############################
+pip freeze | grep <package name>
+
+
+#######################To create Virtual Environment#######################################################
+
+#
+#environments is directory
+#project_env is project_name
+===================================
+
+sudo apt-get install -y python3-venv
+mkdir environments
+cd environments
+python3 -m venv project_env 
+ls project_env
+source project_env/bin/activate
+
+##########cent os UAT###########
+python3 -m venv python3-deeplrn
+source python3-deeplrn/bin/activate
+deactivate
+###########################Docker Image########################################
+
+# Build docker image
+docker build -t {name of image}:latest .
+
+# Test Build image
+docker run -it {name of image}
+
+#Run docker image # 5039 : web service port     (server port (left): flask application port (right))
+docker run -d -p 5039:5039 {name of image}
+sudo docker run -d -it --name pdf-redaction -p 5033:5033 pdf-redaction:latest
+
+#Check docker running process
+docker ps
+
+#Check docker images
+docker images
+
+#Check docker image logs
+docker logs {image ID}
+
+# save docker image 
+docker save -o  {/home/parag.patil/Parag/web_service/ner-redaction.tar} {ner-redaction}
+
+# Load docker image
+docker load -i {/home/parag.patil/Parag/web_service/ner-redaction.tar}
+
+#To stop docker 
+docker stop {name of image}
+
+# delete image
+docker rmi -f {image ID}
+
+# to remove container 
+docker rm -f auto_regex_container
+
+#To enter into docker image terminal 
+sudo docker exec -it f278fca17873 bash
+
+#Mounting  server folder to docker 
+sudo docker run --name cm-tool-app2 -v /home/ganeshkharad/Downloads/Projects/Docker/cmjetmodel_v2/process/:/process/ -p 5000:5000 cm-app2
+# acess of tar file 
+sudo chmod 777 -R ner-redaction.tar
+
+# to remove none images 
+docker rmi -f $(docker images | grep "<none>" | awk "{print \$3}")
+
+sudo docker run -d -it --name pdf-redaction_container -p 5033:5033 pdf-redaction:latest
+sudo docker run -d -it --name ner-redaction_container -p 5039:5039 ner-redaction:latest
+sudo docker run -d -it --name ner-redaction-new_container -p 5039:5039 ner-redaction-new:latest
+sudo docker run -d -it --name jet_redaction_container -p 5053:5053 jet_redaction:latest
+docker run -d -it --name sentiment_imgage_container -p 7013:7013 sentiment_imgage:latest
+docker run -d -it --name bo_cm_tool_container -p 7012:7012 bo_cm_tool:latest
+
+*************************
+sudo ssh -i /home/parag.patil/Parag/application.pem application@10.181.156.54
+
+ssh -i /home/parag.patil/Downloads/jet_docker.pem jet@10.185.185.171
+cd /home/jet/Jet_Redaction/
+docker build -t jet_redaction:latest .
+docker build -t jet_redaction_qa:latest .
+docker rm -f jet_redaction_container
+docker run -d -it --name jet_redaction_container -p 5053:5053 jet_redaction:latest
+
+docker run -d -it --name jet_redaction_container_qa -p 5039:5039 jet_redaction_qa:latest
+
+# copy file to s3
+python S3_file_copy_.py /home/parag.patil/Parag/web_service/test_input/ deduction/jetSmw/99/original/
+
+gunicorn -w 4 -b 0.0.0.0:5053 Jet_Redaction:app
+
+# to stop all docker with img name 
+docker stop $(docker ps -q --filter ancestor=scraping_docker_image)
+##############docker compose###########
+
+sudo docker-compose build # build docker image using yml file 
+ sudo docker-compose up  # start app 
+ sudo docker-compose down  # stop all app
+
+
+docker build -t ocr_pink_green_t5:latest .
+docker build -t jet_scrapping:latest .
+###############################################################################
+#copy files from docker 
+docker cp 462e25af9d77:'/app/uploads/jetSmw27/PS (1)_06-26-2020_03:02:51.pdf' /home/jet/Jet_Redaction/
+
+docker rm -f pat_scrapping
+sudo docker run -d -it --name pat_scrapping -p 5076:5076  pat_scrapping:latest
+
+cd /home/jet/autodownload/india/Patna_Court/Scrapping/
+nohup /usr/local/bin/python3 TRI_scraping_services.py>>TRI_scraping_services.log 2>&1 &
+nohup /usr/local/bin/python3 PAT_scraping_services.py>>PAT_scraping_services.log 2>&1 &
+
+cd /home/jet/autodownload/india/Patna_Court/docker
+docker rm -f pat_scrapping
+docker build -t pat_scrapping:latest .
+docker run -d -it --name pat_scrapping -p 5076:5076  pat_scrapping:latest
+
+docker run -d -it --name tri_scrapping -p 5078:5078  tri_scrapping:latest
+
+cd /home/jet/autodownload/india/Tripura_Court/docker
+docker rm -f tri_scrapping
+docker build -t tri_scrapping:latest .
+docker run -d -it --name tri_scrapping -p 5078:5078  tri_scrapping:latest
+######################RASA##################################
+sudo docker rm -f rasa_test
+docker build -t rasa_test:latest .
+sudo docker run -d -it --name rasa_test -p 5006:5006 rasa_test:latest
+
+sudo docker run --rm --name rasa_test_run -v /home/parag.patil/Parag/rasa_proj/financial-demo-masterV2:/app -p 5006:5006 rasa_test rasa run --enable-api --cors "*" --port 5006 --debug
+
+sudo docker run --rm --name rasa_test_action -v /home/parag.patil/Parag/rasa_proj/financial-demo-masterV2:/app -p 5056:5056 rasa_test rasa run actions --port 5056 --debug
+
+############on DS server ###############
+nohup python3 flair_nlp_model_training_TERM.py>>flair_nlp_model_training_TERM.log 2>&1 &
+nohup python3 copy_grt2k_files_PP_20200113.py /home/application/ocr/set1/output/ /home/application/US/text >>copy_grt2k_files_PP_20200113.log 2>&1 &
+python3 GreenFunction.py /home/application/US/text/ /home/application/US/green/
+
+nohup python3 20200618_USA_pinkField_Model.py /home/application/US/text/ /home/application/US/pink/ >>20200618_USA_pinkField_Model.log 2>&1 &
+
+# holding test
+docker run --rm --name cm_tool_holding -v /home/application/cm_tool/testing/holding:/app cm_tool python3 /app/holding_prediction.py
+docker run --rm --name cm_tool_fact -v /home/application/cm_tool/testing/holding1:/app cm_tool python3 /app/fact_prediction.py
+docker run --rm --name code_test -v /home/parag.patil/Parag/CM_Tool/contact_info/code:/app doc_similarity python3 /app/final_code.py
+###################ocr##################
+docker rm -f ocr_container
+
+docker run --rm --name ocr_container -v /home/application/ocr/set1:/app ocr_pink_green_t5 python3 /app/pdf_to_text_conversion_OCR_PP_20200810.py /app/input/ /app/output/ 
+
+docker run --rm --name ocr_container -v /home/application/ocr/set2:/app ocr_pink_green_t5 python3 /app/pdf_to_text_conversion_OCR_PP_20200810.py /app/input/ /app/output/ 
+
+
+# pink and green
+docker run --rm --name pink_container -v /home/maheshpatel/Parag/pink _field_model_india_PP_20200618:/app pink_green python3 /app/headnote_pinkfieldV2.py /app/input/ /app/input/ 
+
+#green
+docker run --rm --name pink_container -v /home/application/model/greenfield:/app pink_green python3 /app/Int_CRF.py /app/input/ /app/output/ 
+
+docker run --rm --name pink_container -v /home/maheshpatel/Parag/GreenField:/app pink_green python3 /app/Int_CRF.py /app/input/ /app/input/ 
+
+
+# cm_tool_model 
+docker run --rm --name cm_tool_test -v /home/application/cm_tool/cmjetmodel_v8_QA:/app cm_tool python3 /app/test_files.py
+
+docker run --rm --name cm_tool_test -v /home/application/cm_tool/v13:/app cm_tool python3 /app/test_files.py
+
+nohup docker run --rm --name ocr_container -v /home/application/Jet/ocr:/app ocr_pink_green_t5 python3 /app/pdf_to_text_conversion_OCR_PP_20200716.py /app/set1/input/ /app/set1/output/ >> pdf_to_text_conversion_OCR_PP_20200716_set1.log1 2>&1 &
+
+nohup docker run --rm --name ocr_container_2 -v /home/application/Jet/ocr/set2:/app ocr_pink_green_t5 python3 /app/pdf_to_text_conversion_OCR_PP_20200716.py /app/input/ /app/output/ >> pdf_to_text_conversion_OCR_PP_20200716_set2.log 2>&1 &
+
+nohup docker run --rm --name T5_container -v /home/application/Jet/t5_holding:/app ocr_pink_green_t5 python3 /app/T5-model_holding.py >> T5-model_holding.log 2>&1 &
+
+####################cm tool#########################
+docker build -t cm_tool:latest .
+docker rm -f cm_tool
+docker run -d -it --name cm_tool cm_tool:latest
+#to test 
+sudo docker run --rm --name cm_tool_qa -v /home/parag.patil/Parag/CM_Tool/web_service/cmjetmodel_v2QA:/app -p 5094:5094 cm_tool python3 /app/CM_wrapper.py
+
+
+
+#ocr
+cd "/home/jet/DS_docker_images/CM_Tool_QA&UAT/OCR"       
+
+nohup  sudo docker run --rm --name cm_tool_ocr -v "/home/jet/DS_docker_images/CM_Tool_QA&UAT/OCR":/app -p 6002:6002 cm_tool:latest python3 /app/CM_pdf_ocr.py >>  CM_pdf_ocr.log 2>&1 &
+
+# prod ocr
+
+cd /home/ds/pdf_ocr_web-service_V1
+
+nohup  sudo docker run --rm --name cm_tool_ocr -v "/home/ds/pdf_ocr_web-service_V1":/app -p 6002:6002 cm_tool:latest python3 /app/CM_pdf_ocr.py >>  CM_pdf_ocr.log 2>&1 &
+
+#QA
+cd "/home/jet/DS_docker_images/CM_Tool_QA&UAT/QA"       
+
+nohup  sudo docker run --rm --name cm_tool_qa -v "/home/jet/DS_docker_images/CM_Tool_QA&UAT/QA":/app -p 5094:5094 cm_tool python3 /app/CM_wrapper.py >>  CM_wrapper.log 2>&1 &
+
+cd "/home/jet/DS_docker_images/CM_Tool_QA&UAT/UAT"       
+
+nohup  sudo docker run --rm --name cm_tool_uat -v "/home/jet/DS_docker_images/CM_Tool_QA&UAT/UAT":/app -p 5096:5096 cm_tool python3 /app/CM_wrapper.py >>  CM_wrapper.log 2>&1 &
+
+#test
+cd "/home/jet/DS_docker_images/CM_Tool_QA&UAT/cmjetmodel_v12_QA"
+nohup  sudo docker run --rm --name cm_tool_qa_test -v "/home/jet/DS_docker_images/CM_Tool_QA&UAT/cmjetmodel_v12_QA":/app -p 5094:5094 cm_tool python3 /app/CM_wrapper.py >>  CM_wrapper.log 2>&1 &
+
+#############################
+# Activate it
+ 
+source python3-deeplrn/bin/activate    
+
+# to de-activate it 
+deactivate
+##########gpu#########
+ssh sachingupta@10.199.18.27
+hdKn3y9EDGDa
+watch -n0.1 nvidia-smi # check gpu 
+nohup python T5model-uat.py >>  T5model-uat.log 2>&1 &
+nohup python3 T5-model-Training_term_CPU.py >>  T5-model-Training_term_CPU.log 2>&1 &
+
+nohup python3 T5-model-Training_CPU.py >> T5-model-Training_CPU.log 2>&1 &
+
+nohup python3 T5-model-Training.py >> T5-model-Training.log 2>&1 &
+nohup python3 T5-model-Training_gov2.py >> T5-model-Training_gov2.log 2>&1 &
+nohup python3 T5-model-Training_gov.py >> T5-model-Training_gov.log 2>&1 &
+nohup python3 T5-model-Training_term_CPU_exec.py >> T5-model-Training_term_CPU_exec.log 2>&1 &
+nohup python3 T5-model-Training_com_date.py >> T5-model-Training_com_date.log 2>&1 &
+nohup python3 auto_us_new_v2.py >> auto_us_new_v2.log 2>&1 &
+nohup python3 T5-model-Training_paties_to_contra_comp_name.py >>  T5-model-Training_paties_to_contra_comp_name.log 2>&1 &
+T5-model-Training_paties_to_contra_comp_name_tenant
+nohup python3 -m spacy_crfsuite.train training_data.json -c default-config.json -o model/ -lm en_core_web_sm >>  crfsuite.log 2>&1 &
+
+# to kill all python process
+sudo pkill -9 python
+
+python3 gpt2_squad.py --output_dir=output/ --train_file=data/train-v2.0.json --do_train --train_batch_size=32
+
+###makai####
+ssh parag@135.0.110.58 -p 32022
+_Welcome9
+
+
+
